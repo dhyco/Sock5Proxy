@@ -1,0 +1,1 @@
+/usr/bin/c++   -std=c++0x -pthread -g -DLOG_USE_COLOR  -rdynamic CMakeFiles/test_demo.dir/client/Client.cpp.o CMakeFiles/test_demo.dir/log/log.cpp.o CMakeFiles/test_demo.dir/Base/BaseClass/CThreadPool.cpp.o CMakeFiles/test_demo.dir/testdemo/ThreadPoolTest.cpp.o  -o test_demo -levent 

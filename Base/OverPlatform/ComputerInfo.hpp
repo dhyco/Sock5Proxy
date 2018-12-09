@@ -26,7 +26,7 @@ namespace Base {
 #elif __linux__
 		// linux
 #include "unistd.h"
-		unsigned int GetCpuNum() {
+		static unsigned int GetCpuNum() {
 			return sysconf(_SC_NPROCESSORS_ONLN);
 		}
 #elif __unix__ // all unices not caught above

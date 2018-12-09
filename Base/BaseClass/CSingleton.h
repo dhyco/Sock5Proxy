@@ -42,7 +42,7 @@ namespace Base {
 				g_mtx.lock();
 				if (NULL == m_Instance) {
 					//m_Instance = new Singleton();
-					unique_ptr<T> p(new T());
+					std::unique_ptr<T> p(new T());
 					m_Instance = std::move(p);
 				}
 				g_mtx.unlock();

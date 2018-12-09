@@ -1,0 +1,3 @@
+/root/test/MyRepository/Sock5Proxy/build/CMakeFiles/rebuild_cache.dir
+/root/test/MyRepository/Sock5Proxy/build/CMakeFiles/test_demo.dir
+/root/test/MyRepository/Sock5Proxy/build/CMakeFiles/edit_cache.dir
