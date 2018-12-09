@@ -8,16 +8,21 @@ CMakeFiles/test_demo.dir/Base/BaseClass/CThreadPool.cpp.o
  /root/test/MyRepository/Sock5Proxy/Base/BaseClass/CThreadPool.cpp
  /root/test/MyRepository/Sock5Proxy/Base/BaseClass/CThreadPool.h
 CMakeFiles/test_demo.dir/client/Client.cpp.o
+ ..//Base/BaseClass/CThreadPool.h
+ ..//Base/OverPlatform/ComputerInfo.hpp
+ ..//log/log.h
+ ../Base/BaseClass/CSingleton.h
  ../log/log.h
  /root/test/MyRepository/Sock5Proxy/client/Client.cpp
  /root/test/MyRepository/Sock5Proxy/client/Client.h
 CMakeFiles/test_demo.dir/log/log.cpp.o
  /root/test/MyRepository/Sock5Proxy/log/log.cpp
  /root/test/MyRepository/Sock5Proxy/log/log.h
-CMakeFiles/test_demo.dir/testdemo/ThreadPoolTest.cpp.o
- ..//Base/BaseClass/CSingleton.h
+CMakeFiles/test_demo.dir/testdemo/SSClientTest.cpp.o
  ..//Base/BaseClass/CThreadPool.h
  ..//Base/OverPlatform/ComputerInfo.hpp
  ..//log/log.h
  ../Base/BaseClass/CSingleton.h
- /root/test/MyRepository/Sock5Proxy/testdemo/ThreadPoolTest.cpp
+ ../client/Client.h
+ ../log/log.h
+ /root/test/MyRepository/Sock5Proxy/testdemo/SSClientTest.cpp

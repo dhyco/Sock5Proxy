@@ -6,14 +6,6 @@
 
 #IncludeRegexTransform: 
 
-..//Base/BaseClass/CSingleton.h
-mutex
--
-memory
--
-iostream
--
-
 ..//Base/BaseClass/CThreadPool.h
 vector
 -
@@ -62,6 +54,46 @@ mutex
 memory
 -
 iostream
+-
+
+../client/Client.h
+stdio.h
+-
+stdlib.h
+-
+string
+-
+event2/buffer.h
+-
+event2/bufferevent.h
+-
+event2/event.h
+-
+event2/listener.h
+-
+event2/util.h
+-
+iostream
+-
+functional
+-
+thread
+-
+future
+-
+mutex
+-
+log.h
+../client/log.h
+winsock2.h
+-
+ws2tcpip.h
+-
+arpa/inet.h
+-
+netinet/in.h
+-
+sys/socket.h
 -
 
 ../log/log.h
@@ -123,6 +155,8 @@ functional
 -
 thread
 -
+Base/BaseClass/CThreadPool.h
+/root/test/MyRepository/Sock5Proxy/client/Base/BaseClass/CThreadPool.h
 
 /root/test/MyRepository/Sock5Proxy/client/Client.h
 stdio.h
@@ -184,13 +218,11 @@ stdarg.h
 stdio.h
 -
 
-/root/test/MyRepository/Sock5Proxy/testdemo/ThreadPoolTest.cpp
-iostream
+/root/test/MyRepository/Sock5Proxy/testdemo/SSClientTest.cpp
+cstdio
 -
-chrono
--
-Base/BaseClass/CSingleton.h
-/root/test/MyRepository/Sock5Proxy/testdemo/Base/BaseClass/CSingleton.h
+Client.h
+/root/test/MyRepository/Sock5Proxy/testdemo/Client.h
 Base/BaseClass/CThreadPool.h
 /root/test/MyRepository/Sock5Proxy/testdemo/Base/BaseClass/CThreadPool.h
 

@@ -7,7 +7,7 @@ set(CMAKE_DEPENDS_CHECK_CXX
   "/root/test/MyRepository/Sock5Proxy/Base/BaseClass/CThreadPool.cpp" "/root/test/MyRepository/Sock5Proxy/build/CMakeFiles/test_demo.dir/Base/BaseClass/CThreadPool.cpp.o"
   "/root/test/MyRepository/Sock5Proxy/client/Client.cpp" "/root/test/MyRepository/Sock5Proxy/build/CMakeFiles/test_demo.dir/client/Client.cpp.o"
   "/root/test/MyRepository/Sock5Proxy/log/log.cpp" "/root/test/MyRepository/Sock5Proxy/build/CMakeFiles/test_demo.dir/log/log.cpp.o"
-  "/root/test/MyRepository/Sock5Proxy/testdemo/ThreadPoolTest.cpp" "/root/test/MyRepository/Sock5Proxy/build/CMakeFiles/test_demo.dir/testdemo/ThreadPoolTest.cpp.o"
+  "/root/test/MyRepository/Sock5Proxy/testdemo/SSClientTest.cpp" "/root/test/MyRepository/Sock5Proxy/build/CMakeFiles/test_demo.dir/testdemo/SSClientTest.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 

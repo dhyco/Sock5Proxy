@@ -204,32 +204,32 @@ log/log.cpp.s:
 	$(MAKE) -f CMakeFiles/test_demo.dir/build.make CMakeFiles/test_demo.dir/log/log.cpp.s
 .PHONY : log/log.cpp.s
 
-testdemo/ThreadPoolTest.o: testdemo/ThreadPoolTest.cpp.o
+testdemo/SSClientTest.o: testdemo/SSClientTest.cpp.o
 
-.PHONY : testdemo/ThreadPoolTest.o
+.PHONY : testdemo/SSClientTest.o
 
 # target to build an object file
-testdemo/ThreadPoolTest.cpp.o:
-	$(MAKE) -f CMakeFiles/test_demo.dir/build.make CMakeFiles/test_demo.dir/testdemo/ThreadPoolTest.cpp.o
-.PHONY : testdemo/ThreadPoolTest.cpp.o
+testdemo/SSClientTest.cpp.o:
+	$(MAKE) -f CMakeFiles/test_demo.dir/build.make CMakeFiles/test_demo.dir/testdemo/SSClientTest.cpp.o
+.PHONY : testdemo/SSClientTest.cpp.o
 
-testdemo/ThreadPoolTest.i: testdemo/ThreadPoolTest.cpp.i
+testdemo/SSClientTest.i: testdemo/SSClientTest.cpp.i
 
-.PHONY : testdemo/ThreadPoolTest.i
+.PHONY : testdemo/SSClientTest.i
 
 # target to preprocess a source file
-testdemo/ThreadPoolTest.cpp.i:
-	$(MAKE) -f CMakeFiles/test_demo.dir/build.make CMakeFiles/test_demo.dir/testdemo/ThreadPoolTest.cpp.i
-.PHONY : testdemo/ThreadPoolTest.cpp.i
+testdemo/SSClientTest.cpp.i:
+	$(MAKE) -f CMakeFiles/test_demo.dir/build.make CMakeFiles/test_demo.dir/testdemo/SSClientTest.cpp.i
+.PHONY : testdemo/SSClientTest.cpp.i
 
-testdemo/ThreadPoolTest.s: testdemo/ThreadPoolTest.cpp.s
+testdemo/SSClientTest.s: testdemo/SSClientTest.cpp.s
 
-.PHONY : testdemo/ThreadPoolTest.s
+.PHONY : testdemo/SSClientTest.s
 
 # target to generate assembly for a file
-testdemo/ThreadPoolTest.cpp.s:
-	$(MAKE) -f CMakeFiles/test_demo.dir/build.make CMakeFiles/test_demo.dir/testdemo/ThreadPoolTest.cpp.s
-.PHONY : testdemo/ThreadPoolTest.cpp.s
+testdemo/SSClientTest.cpp.s:
+	$(MAKE) -f CMakeFiles/test_demo.dir/build.make CMakeFiles/test_demo.dir/testdemo/SSClientTest.cpp.s
+.PHONY : testdemo/SSClientTest.cpp.s
 
 # Help Target
 help:
@@ -249,9 +249,9 @@ help:
 	@echo "... log/log.o"
 	@echo "... log/log.i"
 	@echo "... log/log.s"
-	@echo "... testdemo/ThreadPoolTest.o"
-	@echo "... testdemo/ThreadPoolTest.i"
-	@echo "... testdemo/ThreadPoolTest.s"
+	@echo "... testdemo/SSClientTest.o"
+	@echo "... testdemo/SSClientTest.i"
+	@echo "... testdemo/SSClientTest.s"
 .PHONY : help
 
 

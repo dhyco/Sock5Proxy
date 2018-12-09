@@ -1,5 +1,6 @@
 #include <cstdio>
 #include "Client.h"
+#include "Base/BaseClass/CThreadPool.h"
 int main()
 {
     printf("hello from ConsoleApplication1!\n");

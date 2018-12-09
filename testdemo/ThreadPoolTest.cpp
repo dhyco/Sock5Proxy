@@ -65,9 +65,26 @@ namespace TestCase {
 		getchar();
 	}
 }
+typedef struct
+{    /* thread identifier for Win32 */
+    void *_Hnd;    /* Win32 HANDLE */
+    unsigned int _Id;
+} _Thrd_imp_t;
+typedef _Thrd_imp_t _Thrd_t;
 int main()
 {
-    TestCase::TestThreadPool();
+
+    //TestCase::TestThreadPool();
+    Base::BaseClass::CThreadPool::Instance()->Start();
+    auto func = [](){
+    	std::thread::id tid = std::this_thread::get_id();
+        _Thrd_t t = *(_Thrd_t*)(char*)&tid ;
+        unsigned int nId = t._Id;
+        std::cout << "luo::" << nId  <<std::endl;
+    };
+    while(1){
+    Base::BaseClass::CThreadPool::Instance()->enqueue(func);
+    }
     getchar();
 	return 0;
 }

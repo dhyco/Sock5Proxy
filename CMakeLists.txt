@@ -17,6 +17,7 @@ AUX_SOURCE_DIRECTORY("client" DIR_SRCS_CLIENT)
 AUX_SOURCE_DIRECTORY("log" DIR_SRCS_LOG)
 message("${DIR_SRCS_LOG}")
 
-ADD_EXECUTABLE(${PROJECT_NAME} ${DIR_SRCS_CLIENT} ${DIR_SRCS_LOG} ${source_file} "./testdemo/ThreadPoolTest.cpp")
+#ADD_EXECUTABLE(${PROJECT_NAME} ${DIR_SRCS_CLIENT} ${DIR_SRCS_LOG} ${source_file} "./testdemo/ThreadPoolTest.cpp")
+ADD_EXECUTABLE(${PROJECT_NAME} ${DIR_SRCS_CLIENT} ${DIR_SRCS_LOG} ${source_file} "./testdemo/SSClientTest.cpp")
 
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} event)

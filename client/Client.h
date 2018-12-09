@@ -42,6 +42,7 @@ namespace SSClinet {
 	struct CallBackInfo{
 		int fd;
 		struct event* evfifo;
+		event_base * base;
 	};
 	struct Ssocket
 	{

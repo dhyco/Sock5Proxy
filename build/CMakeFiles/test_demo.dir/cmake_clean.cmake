@@ -2,7 +2,7 @@ file(REMOVE_RECURSE
   "CMakeFiles/test_demo.dir/client/Client.cpp.o"
   "CMakeFiles/test_demo.dir/log/log.cpp.o"
   "CMakeFiles/test_demo.dir/Base/BaseClass/CThreadPool.cpp.o"
-  "CMakeFiles/test_demo.dir/testdemo/ThreadPoolTest.cpp.o"
+  "CMakeFiles/test_demo.dir/testdemo/SSClientTest.cpp.o"
   "test_demo.pdb"
   "test_demo"
 )

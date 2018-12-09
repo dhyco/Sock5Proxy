@@ -14,11 +14,6 @@
 #include "log/log.h"
 namespace Base {
 	namespace BaseClass {
-        
-       
-
-
-
 		class CThreadPool :public CSingleton<CThreadPool> {
 			 class CThreadObj {
 			public:
@@ -84,7 +79,7 @@ namespace Base {
 				std::atomic<size_t>  max ;
 				std::atomic<size_t>  now ;
 				std::mutex mtx;
-				ThreadsNum():min(3), max(12), now(0){}
+				ThreadsNum():min(3), max(20), now(0){}
 				void AddThreadsNum(size_t n = 1) {
 					now += n;
 					//std::cout <<"rrrr: " << now << std::endl;

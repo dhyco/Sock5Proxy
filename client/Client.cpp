@@ -4,6 +4,7 @@
 #include <future>
 #include <functional>
 #include <thread>
+#include "Base/BaseClass/CThreadPool.h"
 #define BUFFER_SIZE 1024
 #define SOCKS_BUF 1024
 #define byte unsigned char
@@ -115,10 +116,16 @@ namespace SSClinet {
 			
 			event_base_once(base, fd, EV_READ,(ClientReadFdCallBackFunc)ParseSock5CallBack2, (void*)base,NULL);
 			event_base_dispatch(base);
+
+			log_t("111111111111111111111111111thread %d end", std::this_thread::get_id());
 		};
-		event_base_loopbreak((event_base *)arg);
+		//event_base_loopbreak((event_base *)arg);
+		//event_base_dispatch((event_base *)arg);
+		log_t("=======================ssss");
+
 		//bufferevent_setcb(bufev, (ClientReadCallBackFunc)ParseSock5CallBack2, NULL, (ClientReadErrorCallBackFunc)ClientReadErrorCallBack, (void*)client_obj);
 		//bufferevent_enable(bufev, EV_READ | EV_WRITE);
+		Base::BaseClass::CThreadPool::Instance()->enqueue(func);
 		//std::thread t(func);
 		//t.detach();
 	   	
@@ -134,7 +141,9 @@ namespace SSClinet {
 		if (nread < 0) {
 			if (errno == EAGAIN || errno == EINTR) {
 				nread = 0;
+				return;
 			} else {
+				event_base_loopbreak(base);
 				close(fd);
 				return;
 			}
@@ -145,6 +154,7 @@ namespace SSClinet {
 		log_t("read %d", nread);
 		if ( buf[1] != 0x01) {
 			log_e("CONNECT only");
+			event_base_loopbreak(base);
 			close(fd);
 			return;
 		}
@@ -192,6 +202,7 @@ namespace SSClinet {
 		int con_result = connect(sock, (struct sockaddr*) remote_addr, sizeof(struct sockaddr));
 		 if(con_result < 0){
 			 log_e("remote fd error %d", con_result);
+			 event_base_loopbreak(base);
 			 close(fd);
 			 close(sock);
 			 return;
@@ -211,12 +222,14 @@ namespace SSClinet {
 		
         struct event* evfifo1 = event_new(NULL, -1, 0, NULL, NULL);
 		info1->evfifo =  evfifo1;
+		info1->base = base;
 		event_assign(evfifo1, base, fd, EV_READ|EV_PERSIST, (ClientReadFdCallBackFunc)callback_func_reomte, (void*)info1);
 		event_add(evfifo1, NULL);
 		
 		
 		struct CallBackInfo* info2 = new CallBackInfo();
 		info2->fd = fd;
+		info2->base = base;
 		struct event* evfifo2 = event_new(NULL, -1, 0, NULL, NULL);
 		info2->evfifo =  evfifo2;
 		event_assign(evfifo2, base, sock, EV_READ|EV_PERSIST, (ClientReadFdCallBackFunc)callback_func_reomte, (void*)info2);
@@ -259,7 +272,7 @@ namespace SSClinet {
 		//int errno =0;
 		struct CallBackInfo* info = (struct CallBackInfo*)arg;
 		int remote_fd = info->fd; 
-		log_t("thread ID: %d", getpid());
+		log_t("thread ID: %d", std::this_thread::get_id());
 		log_t("luo test!!");
 		while(1){
 			byte buf[SOCKS_BUF] = {0};
@@ -269,12 +282,14 @@ namespace SSClinet {
 				if (errno == EAGAIN || errno == EINTR) {
 					nread = 0;
 				} else {
+					event_base_loopbreak(info->base);
 					event_free(info->evfifo);
 					close(fd);
 					close(info->fd);
 					return;
 				}
 			} else if (nread == 0) {
+				event_base_loopbreak(info->base);
 				event_free(info->evfifo);
 				close(info->fd);
 				close(fd);
@@ -288,6 +303,7 @@ namespace SSClinet {
 					
 				}else{
 					log_e("client loss %d", fd);
+					event_base_loopbreak(info->base);
 					event_del(info->evfifo);
 					event_free(info->evfifo);
 				    close(info->fd);

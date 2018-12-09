@@ -129,28 +129,28 @@ CMakeFiles/test_demo.dir/Base/BaseClass/CThreadPool.cpp.o.provides: CMakeFiles/t
 CMakeFiles/test_demo.dir/Base/BaseClass/CThreadPool.cpp.o.provides.build: CMakeFiles/test_demo.dir/Base/BaseClass/CThreadPool.cpp.o
 
 
-CMakeFiles/test_demo.dir/testdemo/ThreadPoolTest.cpp.o: CMakeFiles/test_demo.dir/flags.make
-CMakeFiles/test_demo.dir/testdemo/ThreadPoolTest.cpp.o: ../testdemo/ThreadPoolTest.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/root/test/MyRepository/Sock5Proxy/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/test_demo.dir/testdemo/ThreadPoolTest.cpp.o"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/test_demo.dir/testdemo/ThreadPoolTest.cpp.o -c /root/test/MyRepository/Sock5Proxy/testdemo/ThreadPoolTest.cpp
+CMakeFiles/test_demo.dir/testdemo/SSClientTest.cpp.o: CMakeFiles/test_demo.dir/flags.make
+CMakeFiles/test_demo.dir/testdemo/SSClientTest.cpp.o: ../testdemo/SSClientTest.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/root/test/MyRepository/Sock5Proxy/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/test_demo.dir/testdemo/SSClientTest.cpp.o"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/test_demo.dir/testdemo/SSClientTest.cpp.o -c /root/test/MyRepository/Sock5Proxy/testdemo/SSClientTest.cpp
 
-CMakeFiles/test_demo.dir/testdemo/ThreadPoolTest.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/test_demo.dir/testdemo/ThreadPoolTest.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /root/test/MyRepository/Sock5Proxy/testdemo/ThreadPoolTest.cpp > CMakeFiles/test_demo.dir/testdemo/ThreadPoolTest.cpp.i
+CMakeFiles/test_demo.dir/testdemo/SSClientTest.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/test_demo.dir/testdemo/SSClientTest.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /root/test/MyRepository/Sock5Proxy/testdemo/SSClientTest.cpp > CMakeFiles/test_demo.dir/testdemo/SSClientTest.cpp.i
 
-CMakeFiles/test_demo.dir/testdemo/ThreadPoolTest.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/test_demo.dir/testdemo/ThreadPoolTest.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /root/test/MyRepository/Sock5Proxy/testdemo/ThreadPoolTest.cpp -o CMakeFiles/test_demo.dir/testdemo/ThreadPoolTest.cpp.s
+CMakeFiles/test_demo.dir/testdemo/SSClientTest.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/test_demo.dir/testdemo/SSClientTest.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /root/test/MyRepository/Sock5Proxy/testdemo/SSClientTest.cpp -o CMakeFiles/test_demo.dir/testdemo/SSClientTest.cpp.s
 
-CMakeFiles/test_demo.dir/testdemo/ThreadPoolTest.cpp.o.requires:
+CMakeFiles/test_demo.dir/testdemo/SSClientTest.cpp.o.requires:
 
-.PHONY : CMakeFiles/test_demo.dir/testdemo/ThreadPoolTest.cpp.o.requires
+.PHONY : CMakeFiles/test_demo.dir/testdemo/SSClientTest.cpp.o.requires
 
-CMakeFiles/test_demo.dir/testdemo/ThreadPoolTest.cpp.o.provides: CMakeFiles/test_demo.dir/testdemo/ThreadPoolTest.cpp.o.requires
-	$(MAKE) -f CMakeFiles/test_demo.dir/build.make CMakeFiles/test_demo.dir/testdemo/ThreadPoolTest.cpp.o.provides.build
-.PHONY : CMakeFiles/test_demo.dir/testdemo/ThreadPoolTest.cpp.o.provides
+CMakeFiles/test_demo.dir/testdemo/SSClientTest.cpp.o.provides: CMakeFiles/test_demo.dir/testdemo/SSClientTest.cpp.o.requires
+	$(MAKE) -f CMakeFiles/test_demo.dir/build.make CMakeFiles/test_demo.dir/testdemo/SSClientTest.cpp.o.provides.build
+.PHONY : CMakeFiles/test_demo.dir/testdemo/SSClientTest.cpp.o.provides
 
-CMakeFiles/test_demo.dir/testdemo/ThreadPoolTest.cpp.o.provides.build: CMakeFiles/test_demo.dir/testdemo/ThreadPoolTest.cpp.o
+CMakeFiles/test_demo.dir/testdemo/SSClientTest.cpp.o.provides.build: CMakeFiles/test_demo.dir/testdemo/SSClientTest.cpp.o
 
 
 # Object files for target test_demo
@@ -158,7 +158,7 @@ test_demo_OBJECTS = \
 "CMakeFiles/test_demo.dir/client/Client.cpp.o" \
 "CMakeFiles/test_demo.dir/log/log.cpp.o" \
 "CMakeFiles/test_demo.dir/Base/BaseClass/CThreadPool.cpp.o" \
-"CMakeFiles/test_demo.dir/testdemo/ThreadPoolTest.cpp.o"
+"CMakeFiles/test_demo.dir/testdemo/SSClientTest.cpp.o"
 
 # External object files for target test_demo
 test_demo_EXTERNAL_OBJECTS =
@@ -166,7 +166,7 @@ test_demo_EXTERNAL_OBJECTS =
 test_demo: CMakeFiles/test_demo.dir/client/Client.cpp.o
 test_demo: CMakeFiles/test_demo.dir/log/log.cpp.o
 test_demo: CMakeFiles/test_demo.dir/Base/BaseClass/CThreadPool.cpp.o
-test_demo: CMakeFiles/test_demo.dir/testdemo/ThreadPoolTest.cpp.o
+test_demo: CMakeFiles/test_demo.dir/testdemo/SSClientTest.cpp.o
 test_demo: CMakeFiles/test_demo.dir/build.make
 test_demo: CMakeFiles/test_demo.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/root/test/MyRepository/Sock5Proxy/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Linking CXX executable test_demo"
@@ -180,7 +180,7 @@ CMakeFiles/test_demo.dir/build: test_demo
 CMakeFiles/test_demo.dir/requires: CMakeFiles/test_demo.dir/client/Client.cpp.o.requires
 CMakeFiles/test_demo.dir/requires: CMakeFiles/test_demo.dir/log/log.cpp.o.requires
 CMakeFiles/test_demo.dir/requires: CMakeFiles/test_demo.dir/Base/BaseClass/CThreadPool.cpp.o.requires
-CMakeFiles/test_demo.dir/requires: CMakeFiles/test_demo.dir/testdemo/ThreadPoolTest.cpp.o.requires
+CMakeFiles/test_demo.dir/requires: CMakeFiles/test_demo.dir/testdemo/SSClientTest.cpp.o.requires
 
 .PHONY : CMakeFiles/test_demo.dir/requires
 
