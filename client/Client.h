@@ -13,7 +13,9 @@
 #include <thread>
 #include <future>
 #include <mutex>
+#include <unistd.h>
 #include "log.h"
+#include "Base/BaseClass/CThreadPool.h"
 #ifdef _WIN32
 #include <winsock2.h>
 #include <ws2tcpip.h>
@@ -21,6 +23,7 @@
 // For inet_addr
 #include <arpa/inet.h>
 #include <netinet/in.h>
+
 #include <sys/socket.h>
 #endif
 
@@ -41,7 +44,6 @@ namespace SSClinet {
 	};
 	struct CallBackInfo{
 		int fd;
-		struct event* evfifo;
 		event_base * base;
 	};
 	struct Ssocket
@@ -49,16 +51,38 @@ namespace SSClinet {
 		int fd;
 		struct sockaddr_in attribute;
 	};
-	struct Road{
-		//std::mutex m_lock_head;
-		bufferevent *m_head;
-		bool m_flag;
-		int m_type_flag;
-		bufferevent *m_tail;
-	};
-	struct LockBuf{
-	bufferevent *m_bev;
-	std::mutex m_lock;
+    
+    class ResourceManager{
+    public:
+    	ResourceManager(): m_fd_src(-1), m_fd_dst(-1), m_base(NULL), m_fd_event_src(NULL), m_fd_event_dst(NULL){}
+    	~ResourceManager(){
+    		log_t("~ResourceManager End %lld", Base::GetCurrentThreadID());
+    		if(m_base != NULL){
+    			event_base_free(m_base);
+    			m_base = NULL;
+    		}
+    		if(m_fd_src > 0){
+    			close(m_fd_src);
+    			m_fd_src = -1;
+    		}
+    		if(m_fd_dst > 0){
+    			close(m_fd_dst);
+    			m_fd_dst = -1;
+    		}
+    		if(m_fd_event_src != NULL){
+    		    event_free(m_fd_event_src);
+    		}
+    		if(m_fd_event_dst != NULL){
+    		    event_free(m_fd_event_dst);
+    		}
+    	}
+        struct CallBackInfo m_src;
+        struct CallBackInfo m_dst;
+    	struct event* m_fd_event_src;
+    	int m_fd_src;
+    	struct event* m_fd_event_dst;
+    	int m_fd_dst;
+    	event_base * m_base;
     };
 	class Client {
 	public:

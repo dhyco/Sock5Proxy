@@ -4,9 +4,9 @@
 #include <future>
 #include <functional>
 #include <thread>
-#include "Base/BaseClass/CThreadPool.h"
 #define BUFFER_SIZE 1024
-#define SOCKS_BUF 1024
+//每次event事件触发，最大可读数量
+#define SOCKS_BUF (1024*1024*4)
 #define byte unsigned char
 	
 namespace SSClinet {
@@ -14,9 +14,11 @@ namespace SSClinet {
 	Client::~Client(){
 		if (m_listener) {
             evconnlistener_free(m_listener);
+            m_listener = NULL;
         }   
 	    if(m_base){
 	        event_base_free(m_base);
+	        m_base = NULL;
 	    }
 	}
 	bool Client::Init() {
@@ -28,8 +30,6 @@ namespace SSClinet {
 		local.sin_port = htons(this->m_conf.client_port);
 		local.sin_addr.s_addr = htonl(INADDR_ANY);
 
-
-		//event_base *base = NULL;
 		this->m_base = event_base_new();
 
 		typedef void (*ListenerCallBackFunc)(evconnlistener *, evutil_socket_t, struct sockaddr *, int , void *);
@@ -56,24 +56,12 @@ namespace SSClinet {
 		struct linger linger;
 		setsockopt(fd, SOL_SOCKET, SO_LINGER, (const void *)&linger,
                    sizeof(struct linger));
-		//第一次连接上来时，需要协商SOCK5 协议
-		//bufev = bufferevent_socket_new(client_obj->m_base, fd, BEV_OPT_CLOSE_ON_FREE | BEV_OPT_DEFER_CALLBACKS);
-		
+		//第一次连接上来时，需要协商SOCK5 协议		
 		log_d("new client conncted ");
-		//struct event *evfifo2 = event_new(client_obj->m_base, fd, EV_READ|EV_PERSIST, (ClientReadFdCallBackFunc)callback_func_reomte, NULL);
-		
-		//event_add(evfifo2, NULL);
 		event_base_once(client_obj->m_base, fd, EV_READ,(ClientReadFdCallBackFunc)ParseSock5CallBack1, (void*)client_obj->m_base,NULL);
-        //设置回调，socket可读或可写
-		//typedef void (*ClientReadCallBackFunc)(bufferevent *, void *);	
-	    //typedef void (*ClientReadErrorCallBackFunc)(bufferevent *, short, void *);
-		//bufferevent_setcb(bufev, (ClientReadCallBackFunc)ParseSock5CallBack1, NULL, (ClientReadErrorCallBackFunc)ClientReadErrorCallBack, (void*)client_obj);
-		//bufferevent_enable(bufev, EV_READ | EV_WRITE);
 	}
-
-	void Client::ParseSock5CallBack1(evutil_socket_t fd, short event, void *arg){
-		//std::thread(std::bind(&CThreadPool::MasterThread, this))
-		
+    //将socket任务投递到线程池中执行
+	void Client::ParseSock5CallBack1(evutil_socket_t fd, short event, void *arg){		
 		auto func = [=](){
 			//Client *client_obj = (Client*)arg;
 			log_t("init sock5 1");
@@ -112,28 +100,24 @@ namespace SSClinet {
 				}
 			}
 			log_t("ParseSock5CallBack1 write %d", nwrite);
+			ResourceManager ResMangObj;
+
 			event_base *base = event_base_new();
-			
-			event_base_once(base, fd, EV_READ,(ClientReadFdCallBackFunc)ParseSock5CallBack2, (void*)base,NULL);
+			ResMangObj.m_base = base;
+			event_base_once(base, fd, EV_READ,(ClientReadFdCallBackFunc)ParseSock5CallBack2, (void*)(&ResMangObj),NULL);
 			event_base_dispatch(base);
 
-			log_t("111111111111111111111111111thread %d end", std::this_thread::get_id());
+			log_t("fd task finish [fd: %d, tid: %lld]end", fd, Base::GetCurrentThreadID());
+			//event_base_loopbreak(base);
 		};
-		//event_base_loopbreak((event_base *)arg);
-		//event_base_dispatch((event_base *)arg);
-		log_t("=======================ssss");
-
-		//bufferevent_setcb(bufev, (ClientReadCallBackFunc)ParseSock5CallBack2, NULL, (ClientReadErrorCallBackFunc)ClientReadErrorCallBack, (void*)client_obj);
-		//bufferevent_enable(bufev, EV_READ | EV_WRITE);
+	    //考虑根据人物类型优化，线程
 		Base::BaseClass::CThreadPool::Instance()->enqueue(func);
-		//std::thread t(func);
-		//t.detach();
-	   	
 	}
 	
 	void Client::ParseSock5CallBack2(evutil_socket_t fd, short event, void *arg){
-		
-		event_base *base = (event_base *)arg;
+		ResourceManager* ResObj = (ResourceManager*)arg;
+		event_base *base = ResObj->m_base;
+		ResObj->m_fd_src = fd;
 		log_t("init sock5 2");
 		int nread = 0;
 		byte buf[BUFFER_SIZE] = {0};
@@ -144,18 +128,16 @@ namespace SSClinet {
 				return;
 			} else {
 				event_base_loopbreak(base);
-				close(fd);
 				return;
 			}
 		} else if (nread == 0) {
-		    close(fd);
+		    event_base_loopbreak(base);
 		    return;
 		}
 		log_t("read %d", nread);
 		if ( buf[1] != 0x01) {
 			log_e("CONNECT only");
 			event_base_loopbreak(base);
-			close(fd);
 			return;
 		}
 		int n = nread;
@@ -192,19 +174,18 @@ namespace SSClinet {
 			}
 			default:
 			log_e("ATYP error");
+			event_base_loopbreak(base);
 			return;
 			break;
 		}
 		int sock = socket(AF_INET, SOCK_STREAM, 0); 
-		
+		ResObj->m_fd_dst = sock;
 		int yes = 1;
 		setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int));
 		int con_result = connect(sock, (struct sockaddr*) remote_addr, sizeof(struct sockaddr));
 		 if(con_result < 0){
 			 log_e("remote fd error %d", con_result);
 			 event_base_loopbreak(base);
-			 close(fd);
-			 close(sock);
 			 return;
 		 }
 		evutil_make_socket_nonblocking(sock);
@@ -216,180 +197,70 @@ namespace SSClinet {
 		
 		//其事件循环只能运行在一个线程中
 		log_d("connected to remote server");
-		log_t("thread ID: %d", getpid());
-		struct CallBackInfo* info1 = new CallBackInfo();
-		info1->fd = sock;
+		ResObj->m_dst.fd = sock;
+		ResObj->m_dst.base = ResObj->m_base;
+        //struct event* 
+        ResObj->m_fd_event_src = event_new(NULL, -1, 0, NULL, NULL);
+
+		event_assign(ResObj->m_fd_event_src, base, fd, EV_READ|EV_PERSIST, 
+			(ClientReadFdCallBackFunc)callback_func_reomte, (void*)(&(ResObj->m_dst)));
+		event_add(ResObj->m_fd_event_src, NULL);
 		
-        struct event* evfifo1 = event_new(NULL, -1, 0, NULL, NULL);
-		info1->evfifo =  evfifo1;
-		info1->base = base;
-		event_assign(evfifo1, base, fd, EV_READ|EV_PERSIST, (ClientReadFdCallBackFunc)callback_func_reomte, (void*)info1);
-		event_add(evfifo1, NULL);
 		
-		
-		struct CallBackInfo* info2 = new CallBackInfo();
-		info2->fd = fd;
-		info2->base = base;
-		struct event* evfifo2 = event_new(NULL, -1, 0, NULL, NULL);
-		info2->evfifo =  evfifo2;
-		event_assign(evfifo2, base, sock, EV_READ|EV_PERSIST, (ClientReadFdCallBackFunc)callback_func_reomte, (void*)info2);
-		event_add(evfifo2, NULL);
+		ResObj->m_src.fd = fd;
+		ResObj->m_src.base = ResObj->m_base;
+		//struct event* 
+		ResObj->m_fd_event_dst  = event_new(NULL, -1, 0, NULL, NULL);
+		event_assign(ResObj->m_fd_event_dst, base, sock, EV_READ|EV_PERSIST, 
+			(ClientReadFdCallBackFunc)callback_func_reomte, (void*)(&(ResObj->m_src)));
+		event_add(ResObj->m_fd_event_dst, NULL);
 		
 		byte socks5_reply[] = {0x05, 0x00, 0x00, 0x01, 0x00,
 					 0x00, 0x00, 0x00, 0x00, 0x00};
 		int nwrite = write(fd, socks5_reply, 10);
-		log_t("write socks5_reply %d bytes", nwrite);
-		/*  // disable linger
-		int remotefd = bufferevent_getfd(remote_bev);
-		log_t("re fd %d",  remotefd);
-		struct linger linger;
-		memset(&linger, 0, sizeof(struct linger));
-		setsockopt(remotefd, SOL_SOCKET, SO_LINGER, (const void *)&linger,
-		sizeof(struct linger));
-		//int *fd1 = new int();
-		//int *fd2 = new int();
-		//*fd1 = bufferevent_getfd(bufev);
-		//*fd2 = remotefd;
-		//struct event *evfifo1 = event_new(client_obj->m_base, remotefd, EV_READ|EV_PERSIST, (ClientReadFdCallBackFunc)callback_func_reomte, fd1);
-		//struct event *evfifo2 = event_new(client_obj->m_base, remotefd, EV_READ|EV_PERSIST, (ClientReadFdCallBackFunc)callback_func_reomte, fd2);
-		//event_add(evfifo1, NULL);
-		//event_add(evfifo2, NULL);
-		bufferevent_setcb(bufev, (ClientReadCallBackFunc)ClientReadCallBack, NULL, (ClientReadErrorCallBackFunc)ClientReadErrorCallBack, (void*)remote_bev);
-		bufferevent_enable(bufev, EV_READ | EV_WRITE);
-		bufferevent_disable(bufev, EV_PERSIST);
-
-		
-		bufferevent_setcb(remote_bev, (ClientReadCallBackFunc)ClientReadCallBack, NULL, (ClientReadErrorCallBackFunc)ClientReadErrorCallBack, (void*)bufev);
-		bufferevent_enable(remote_bev, EV_READ| EV_WRITE);
-		bufferevent_disable(remote_bev, EV_PERSIST);
-		byte socks5_reply[] = {0x05, 0x00, 0x00, 0x01, 0x00,
-					 0x00, 0x00, 0x00, 0x00, 0x00};
-		n = bufferevent_write(bufev, socks5_reply, 10);
-		log_t("write socks5_reply %d bytes", n);		*/	 
+		log_t("write socks5_reply %d bytes", nwrite); 
 	
 	}
 	void Client::callback_func_reomte(evutil_socket_t fd, short event, void *arg){
-		//int errno =0;
 		struct CallBackInfo* info = (struct CallBackInfo*)arg;
 		int remote_fd = info->fd; 
-		log_t("thread ID: %d", std::this_thread::get_id());
-		log_t("luo test!!");
-		while(1){
-			byte buf[SOCKS_BUF] = {0};
-			int nread = read(fd, buf, 1024);
-			log_t("read size %d", nread);
-			if (nread < 0) {
-				if (errno == EAGAIN || errno == EINTR) {
-					nread = 0;
-				} else {
-					event_base_loopbreak(info->base);
-					event_free(info->evfifo);
-					close(fd);
-					close(info->fd);
-					return;
-				}
-			} else if (nread == 0) {
+		
+		byte buf[SOCKS_BUF] = {0};
+		int nread = read(fd, buf, SOCKS_BUF);
+		log_t("read size %d", nread);
+		if (nread < 0) {
+			if (errno == EAGAIN || errno == EINTR) {
+				nread = 0;
+				return;
+			} else {
 				event_base_loopbreak(info->base);
-				event_free(info->evfifo);
-				close(info->fd);
-				close(fd);
 				return;
 			}
-			//printf("%s", buf);
+		} else if (nread == 0) {
+			event_base_loopbreak(info->base);
+			return;
+		}
+		
+        for(int i=0;i<10;i++){
 			int nwrite;
             nwrite = write(remote_fd, buf, nread);
 			if(nwrite <= 0){
 				if(errno == EINTR || errno == EWOULDBLOCK || errno == EAGAIN){
-					
+					continue;
 				}else{
 					log_e("client loss %d", fd);
 					event_base_loopbreak(info->base);
-					event_del(info->evfifo);
-					event_free(info->evfifo);
-				    close(info->fd);
-				    close(fd);
-					break;
+					return;
 				}
 		    }
-			//if(nread <=0 && (errno != EINTR || errno != EWOULDBLOCK || errno != EAGAIN)){
-				//close(remote_fd);
-			//}
-			log_t("write1112221 %d bytes", nread);
-			break;
+		    break;
 		}
-	}
-	void Client::ClientReadCallBack(bufferevent *bev, void *arg){
-		log_t("thread ID: %d", getpid());
-		bufferevent *src = bev;
-		//Road* tmp = (Road*)arg;
-		bufferevent *dst = (bufferevent *)arg;
-		//log_t("fd %d to fd %d",  bufferevent_getfd(src), bufferevent_getfd(dst));
-	    size_t n = 0;
-	    bool first_time = true;
-		int remote_fd = bufferevent_getfd(dst);
-	    while (1) {
-		    byte buf[SOCKS_BUF] = {0};
-		    n = bufferevent_read(src, buf, SOCKS_BUF);
-		    log_t("ClientReadCallBack read %d bytes", n);
-		    if (n <= 0) {
-		        log_t("no more data1");
-		        if (first_time) {
-					log_t("no more start Recycling!!!!");
-				    Client::Recycling(src);
-					Client::Recycling(dst);
-			        return;
-		        }
-				
-				log_t("no more data2");
-				break;
-		    }
-						
-		    first_time = false;
-			
-			log_t("last %d， %d", bufferevent_getfd(dst), n);
-			//n = write(remote_fd, buf, n);	
-			n = bufferevent_write(dst, buf, n);
-				//Client::Recycling(dst);
-		    log_t("write1112221 %d bytes", n);
-	    }
-	}
-	
-	void Client::ClientReadErrorCallBack(bufferevent *bev, short events, void *arg){
-	    if (events && (BEV_EVENT_EOF | BEV_EVENT_ERROR)) {
-			log_i("ClientReadErrorCallBack");
-            // event_base *base = arg;
-            //Client *client = (Client *)arg;
-            if (events & BEV_EVENT_EOF) {
-                log_d("connection %d closed", bufferevent_getfd(bev));
-            } else if (events & BEV_EVENT_ERROR) {
-                log_e("got an error on the connection");
-            }
-			
-			if (bev) {
-				//LockBuf* tmp = (LockBuf*)arg;
-		        //bufferevent *dst = arg->m_bev;
-                //Client* cc = (Client*)arg;
-				//Client::Recycling(bev); // client->local_bev			
-				//Client::Recycling((bufferevent *)arg); 
-                //bufferevent_clear_free(client->remote_bev);
-                //if (client) {
-                // free(client);
-                //}
-            }
-        }
+		log_t("write1112221 %d bytes", nread);	
 	}
 	
 	void Client::listener_errorcb(evconnlistener *listener, void *arg){
 			if (listener) {
             evconnlistener_free(listener);
         } 
-	}
-	void Client::Recycling(bufferevent *bev){
-		log_t("Client::Recycling %d", bufferevent_getfd(bev));
-		if (bev) {
-            bufferevent_setcb(bev, NULL, NULL, NULL, NULL);
-            bufferevent_free(bev);
-			bev = NULL;
-		}
 	}
 }

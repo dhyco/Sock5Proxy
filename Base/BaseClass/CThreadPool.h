@@ -13,6 +13,14 @@
 #include "Base/OverPlatform/ComputerInfo.hpp"
 #include "log/log.h"
 namespace Base {
+	static inline unsigned long long GetCurrentThreadID(){
+		std::ostringstream oss;
+	    oss << std::this_thread::get_id();
+	    std::string stid = oss.str();
+	    unsigned long long tid = std::stoull(stid);
+	    return tid;
+
+	}
 	namespace BaseClass {
 		class CThreadPool :public CSingleton<CThreadPool> {
 			 class CThreadObj {

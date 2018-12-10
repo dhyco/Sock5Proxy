@@ -83,8 +83,12 @@ future
 -
 mutex
 -
+unistd.h
+-
 log.h
 ../client/log.h
+Base/BaseClass/CThreadPool.h
+../client/Base/BaseClass/CThreadPool.h
 winsock2.h
 -
 ws2tcpip.h
@@ -155,8 +159,6 @@ functional
 -
 thread
 -
-Base/BaseClass/CThreadPool.h
-/root/test/MyRepository/Sock5Proxy/client/Base/BaseClass/CThreadPool.h
 
 /root/test/MyRepository/Sock5Proxy/client/Client.h
 stdio.h
@@ -185,8 +187,12 @@ future
 -
 mutex
 -
+unistd.h
+-
 log.h
 /root/test/MyRepository/Sock5Proxy/client/log.h
+Base/BaseClass/CThreadPool.h
+/root/test/MyRepository/Sock5Proxy/client/Base/BaseClass/CThreadPool.h
 winsock2.h
 -
 ws2tcpip.h
@@ -220,6 +226,8 @@ stdio.h
 
 /root/test/MyRepository/Sock5Proxy/testdemo/SSClientTest.cpp
 cstdio
+-
+unistd.h
 -
 Client.h
 /root/test/MyRepository/Sock5Proxy/testdemo/Client.h

@@ -1,8 +1,11 @@
 #include <cstdio>
+#include <unistd.h>
 #include "Client.h"
 #include "Base/BaseClass/CThreadPool.h"
 int main()
 {
+    //Base::BaseClass::CThreadPool::Instance()->Start();
+
     printf("hello from ConsoleApplication1!\n");
 	SSClinet::Config conf;
 	conf.client_port = 1080;
@@ -11,7 +14,8 @@ int main()
 	SSClinet::Client test(conf);
 	test.Start();
      printf("exit---------------!\n");
-     //while(1)	
-	getchar();
+     getchar();
+
+	//getchar();
     return 0;
 }
