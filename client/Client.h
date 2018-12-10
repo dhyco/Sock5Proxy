@@ -41,6 +41,7 @@ namespace SSClinet {
 		int fd;
 		event_base * base;
 	};
+    
     class ResourceManager{
     public:
     	ResourceManager(): m_fd_src(-1), m_fd_dst(-1), m_base(NULL), m_fd_event_src(NULL), m_fd_event_dst(NULL){}
@@ -88,7 +89,6 @@ namespace SSClinet {
 		//libevent
 		event_base *m_base; //提包含了events集合并选择事件类型
 		evconnlistener *m_listener;//监听对象
-		
 		/*
 		libevent库: evconnlistener_new_bind的回调函数
 		arg0:监听对象

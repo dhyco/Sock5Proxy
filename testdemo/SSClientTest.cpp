@@ -12,6 +12,7 @@ int main()
 	SSClinet::Client test(conf);
 	test.Start();
     printf("exit---------------!\n");
+    while(1)
     getchar();
     return 0;
 }
