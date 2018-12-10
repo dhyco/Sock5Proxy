@@ -4,8 +4,6 @@
 #include "Base/BaseClass/CThreadPool.h"
 int main()
 {
-    //Base::BaseClass::CThreadPool::Instance()->Start();
-
     printf("hello from ConsoleApplication1!\n");
 	SSClinet::Config conf;
 	conf.client_port = 1080;
@@ -13,9 +11,7 @@ int main()
 	conf.EnTpye = 1;
 	SSClinet::Client test(conf);
 	test.Start();
-     printf("exit---------------!\n");
-     getchar();
-
-	//getchar();
+    printf("exit---------------!\n");
+    getchar();
     return 0;
 }

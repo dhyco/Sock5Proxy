@@ -32,7 +32,11 @@ namespace Base {
 				CThreadObj(std::thread* t) :m_t(t), m_state(State::runing) {
 					m_id = m_t->get_id();
 				}
-
+                CThreadObj(const CThreadObj& other){
+                	m_id = other.m_id;
+                	m_t = other.m_t;
+                	m_state.store(other.m_state.load());
+                }
 				~CThreadObj() {
 					if (m_t->joinable()) {
 						m_t->join();

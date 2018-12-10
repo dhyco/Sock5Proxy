@@ -24,7 +24,7 @@ namespace SSClinet {
 	bool Client::Init() {
 		log_i("Init");
 		//设置socket属性
-		sockaddr_in& local = this->m_clentSocket.attribute; // listen to local
+		sockaddr_in local;; // listen to local
 		memset(&local, 0, sizeof(sockaddr_in));
 		local.sin_family = AF_INET;
 		local.sin_port = htons(this->m_conf.client_port);
@@ -44,8 +44,8 @@ namespace SSClinet {
 		 std::cout << "Init End" << std::endl;
 	}
 	bool Client::Start(){
-		this->Init();
-		//m_future = std::async(std::launch::async, std::bind(&Client::Init, this));
+		//this->Init();
+		m_future = std::async(std::launch::async, std::bind(&Client::Init, this));
 		return true;
 	}
 	

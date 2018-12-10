@@ -27,11 +27,6 @@
 #include <sys/socket.h>
 #endif
 
-
-
-
-
-
 namespace SSClinet {
 	struct Config {
 		std::string clinet_address;
@@ -46,12 +41,6 @@ namespace SSClinet {
 		int fd;
 		event_base * base;
 	};
-	struct Ssocket
-	{
-		int fd;
-		struct sockaddr_in attribute;
-	};
-    
     class ResourceManager{
     public:
     	ResourceManager(): m_fd_src(-1), m_fd_dst(-1), m_base(NULL), m_fd_event_src(NULL), m_fd_event_dst(NULL){}
@@ -71,9 +60,11 @@ namespace SSClinet {
     		}
     		if(m_fd_event_src != NULL){
     		    event_free(m_fd_event_src);
+    		    m_fd_event_src = NULL;
     		}
     		if(m_fd_event_dst != NULL){
     		    event_free(m_fd_event_dst);
+    		    m_fd_event_dst = NULL;
     		}
     	}
         struct CallBackInfo m_src;
@@ -94,12 +85,9 @@ namespace SSClinet {
 		bool Init();
 		bool Listen();
 		Config m_conf;
-		Ssocket m_clentSocket;
-		Ssocket m_serverSocket;
 		//libevent
 		event_base *m_base; //提包含了events集合并选择事件类型
 		evconnlistener *m_listener;//监听对象
-		//bufferevent *m_bufev;//检测网络套接字是否已经就绪，可以进行读写操作
 		
 		/*
 		libevent库: evconnlistener_new_bind的回调函数
@@ -109,19 +97,13 @@ namespace SSClinet {
 		arg3:socket属性结构的长度
 		arg4:回调函数入参
 		*/
-		typedef void (*ClientReadCallBackFunc)(bufferevent *, void *);	
-	    typedef void (*ClientReadErrorCallBackFunc)(bufferevent *, short, void *);	
         typedef void (*ClientReadFdCallBackFunc)(evutil_socket_t, short , void *);		
 		static void ListenerCallBack(evconnlistener *listener, evutil_socket_t fd, struct sockaddr *sa, int socklen, void *arg);
 		static void ParseSock5CallBack1(evutil_socket_t fd, short event, void *arg);
 		static void ParseSock5CallBack2(evutil_socket_t fd, short event, void *arg);
-		static void ClientReadCallBack(bufferevent *bev, void *arg);	
-		static void ClientReadErrorCallBack(bufferevent *bev, short events, void *arg);
 		static void listener_errorcb(evconnlistener *listener, void *arg);
 		static void callback_func_reomte(evutil_socket_t fd, short event, void *arg);
 
-		
-		
 		std::future<bool> m_future;
 	};
 }
