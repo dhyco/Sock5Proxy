@@ -4,6 +4,7 @@
 #include <future>
 #include <functional>
 #include <thread>
+#include <signal.h>
 #define BUFFER_SIZE 1024
 //每次event事件触发，最大可读数量,這個數字太大會出現killed by SIGPIPE，後續定位
 #define SOCKS_BUF (1024)
@@ -23,6 +24,15 @@ namespace SSClinet {
 	}
 	bool Client::Init() {
 		log_i("Init");
+		auto handle_pipe = [](int sig){};
+		struct sigaction action;
+		action.sa_handler = handle_pipe;
+		sigemptyset(&action.sa_mask);
+		action.sa_flags = 0;
+		sigaction(SIGPIPE, &action, NULL);
+
+
+
 		//设置socket属性
 		sockaddr_in local;; // listen to local
 		memset(&local, 0, sizeof(sockaddr_in));
@@ -261,7 +271,7 @@ namespace SSClinet {
 	void Client::listener_errorcb(evconnlistener *listener, void *arg){
 			if (listener) {
             evconnlistener_free(listener);
-            *listener = NULL;
+            listener = NULL;
         } 
 	}
 }
