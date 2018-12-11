@@ -78,13 +78,12 @@ namespace SSClinet {
 			//資源集中管理，方便釋放
 			ResourceManager ResMangObj;
 			ResMangObj.m_fd_src = fd;
-
 			int nread = 0;
 			byte buf[BUFFER_SIZE] = {0};
 			nread = read(fd, buf, BUFFER_SIZE);		
 			if (nread < 0) {
 				if (errno == EAGAIN || errno == EINTR) {
-					nread = 0;
+					//可能需要優化，進行重新讀
 					return;
 				} else {
 					return;
@@ -134,7 +133,7 @@ namespace SSClinet {
 		nread = read(fd, buf, BUFFER_SIZE);		
 		if (nread < 0) {
 			if (errno == EAGAIN || errno == EINTR) {
-				nread = 0;
+				event_base_once(base, fd, EV_READ,(ClientReadFdCallBackFunc)ParseSock5CallBack2, arg,NULL);
 				return;
 			} else {
 				event_base_loopbreak(base);
