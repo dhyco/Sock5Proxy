@@ -75,26 +75,28 @@ namespace SSClinet {
 		auto func = [=](){
 			//Client *client_obj = (Client*)arg;
 			log_t("init sock5 1");
+			//資源集中管理，方便釋放
+			ResourceManager ResMangObj;
+			ResMangObj.m_fd_src = fd;
+
 			int nread = 0;
 			byte buf[BUFFER_SIZE] = {0};
 			nread = read(fd, buf, BUFFER_SIZE);		
 			if (nread < 0) {
 				if (errno == EAGAIN || errno == EINTR) {
 					nread = 0;
+					return;
 				} else {
-					close(fd);
 					return;
 				}
 			} else if (nread == 0) {
-			close(fd);
-			return;
+				return;
 			}
 
 			
 			log_t("read %d bytes", nread);
 			if ( buf[0] != 0x05) {
 				log_e("error 0x05");
-				close(fd);
 				return;
 			}
 			byte reply_auth[2] = {0x05, 0x00};
@@ -102,15 +104,14 @@ namespace SSClinet {
 			nwrite = write(fd, reply_auth, 2);
 			if(nwrite <= 0){
 				if(errno == EINTR || errno == EWOULDBLOCK || errno == EAGAIN){
-					
+					//可能會導致，連接失效
+					return;
 				}else{
-					log_e("client loss %d", fd);
-					close(fd);
+					log_e("ParseSock5CallBack1 client loss %d", fd);
 					return;
 				}
 			}
 			log_t("ParseSock5CallBack1 write %d", nwrite);
-			ResourceManager ResMangObj;
 
 			event_base *base = event_base_new();
 			ResMangObj.m_base = base;
@@ -118,7 +119,6 @@ namespace SSClinet {
 			event_base_dispatch(base);
 
 			log_t("fd task finish [fd: %d, tid: %lld]end", fd, Base::GetCurrentThreadID());
-			//event_base_loopbreak(base);
 		};
 	    //考虑根据人物类型优化，线程
 		Base::BaseClass::CThreadPool::Instance()->enqueue(func);
