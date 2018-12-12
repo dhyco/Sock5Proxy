@@ -71,6 +71,8 @@ namespace Base {
 			template<class F, class... Args>
 			auto enqueue(F&& f, Args&&... args)   //任务管道函数
 				-> std::future<typename std::result_of<F(Args...)>::type>;  //利用尾置限定符  std future用来获取异步任务的结果
+			template<class F, class... Args>	
+			void HandleIOTask(F&& f, Args&&... args);
 			void Start();
 			~CThreadPool();
 		private:
@@ -91,7 +93,7 @@ namespace Base {
 				std::atomic<size_t>  max ;
 				std::atomic<size_t>  now ;
 				std::mutex mtx;
-				ThreadsNum():min(3), max(20), now(0){}
+				ThreadsNum():min(3), max(100), now(0){}
 				void AddThreadsNum(size_t n = 1) {
 					now += n;
 					//std::cout <<"rrrr: " << now << std::endl;
@@ -133,7 +135,14 @@ namespace Base {
 			}
 			condition.notify_one();  //选择一个wait状态的线程进行唤醒，并使他获得对象上的锁来完成任务(即其他线程无法访问对象)
 			return res;
-		}//notify_one不能保证获得锁的线程真正需要锁，并且因此可能产生死锁
+		}
+		template<class F, class... Args>
+		void CThreadPool::HandleIOTask(F&& f, Args&&... args){
+			auto func = std::bind(std::forward<F>(f), std::forward<Args>(args)...);
+			std::thread task(func);
+			task.detach();
+		}
+		//notify_one不能保证获得锁的线程真正需要锁，并且因此可能产生死锁
 		template<class F, class... Args>
 		class CThreadTask {
 			using ReType = typename std::result_of<F(Args...)>::type;

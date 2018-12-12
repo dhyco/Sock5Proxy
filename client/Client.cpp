@@ -120,7 +120,9 @@ namespace SSClinet {
 			log_t("fd task finish [fd: %d, tid: %lld]end", fd, Base::GetCurrentThreadID());
 		};
 	    //考虑根据人物类型优化，线程
-		Base::BaseClass::CThreadPool::Instance()->enqueue(func);
+		//Base::BaseClass::CThreadPool::Instance()->enqueue(func);
+		Base::BaseClass::CThreadPool::Instance()->HandleIOTask(func);
+		
 	}
 	
 	void Client::ParseSock5CallBack2(evutil_socket_t fd, short event, void *arg){
