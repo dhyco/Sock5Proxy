@@ -6,7 +6,7 @@
 #include <thread>
 #include <signal.h>
 #define BUFFER_SIZE 1024
-//每次event事件触发，最大可读数量,這個數字太大會出現killed by SIGPIPE，後續定位
+//每次event事件触发，最大可读数量
 #define SOCKS_BUF (1024)
 #define byte unsigned char
 	
